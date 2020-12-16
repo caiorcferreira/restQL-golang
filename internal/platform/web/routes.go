@@ -59,7 +59,12 @@ func API(log restql.Logger, cfg *conf.Config) (fasthttp.RequestHandler, error) {
 	queryCache := cache.New(log, cfg.Cache.Query.MaxSize, cache.QueryCacheLoader(qr))
 	cacheQr := cache.NewQueryReaderCache(log, queryCache)
 
-	e := eval.NewEvaluator(log, cacheMr, cacheQr, r, parserCache, lifecycle)
+	me := eval.NewMatchEvaluator()
+	parseArgCache := cache.New(log, cfg.Cache.Matches.ArgumentParsingMaxSize, cache.ParseArgCacheLoader(me))
+	matchValueCache := cache.New(log, cfg.Cache.Matches.ResultMaxSize, cache.MatchValueCacheLoader(me))
+	matchEvaluatorCache := cache.NewMatchEvaluatorCache(log, parseArgCache, matchValueCache)
+
+	e := eval.NewEvaluator(log, cacheMr, cacheQr, r, parserCache, lifecycle, matchEvaluatorCache)
 
 	restQl := newRestQl(log, cfg, e, defaultParser)
 

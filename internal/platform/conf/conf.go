@@ -92,6 +92,10 @@ type Config struct {
 		Parser struct {
 			MaxSize int `yaml:"maxSize" env:"RESTQL_CACHE_PARSER_MAX_SIZE"`
 		} `yaml:"parser"`
+		Matches struct {
+			ArgumentParsingMaxSize int `yaml:"argumentParsingMaxSize" env:"RESTQL_CACHE_MATCHES_ARGUMENT_MAX_SIZE"`
+			ResultMaxSize          int `yaml:"resultMaxSize" env:"RESTQL_CACHE_MATCHES_RESULT_MAX_SIZE"`
+		} `yaml:"matches"`
 	} `yaml:"cache"`
 
 	Plugins struct {

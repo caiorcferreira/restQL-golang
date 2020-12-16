@@ -29,10 +29,11 @@ type Evaluator struct {
 	queryReader    QueryReader
 	runner         runner.Runner
 	lifecycle      plugins.Lifecycle
+	matchEvaluator MatchEvaluator
 }
 
 // NewEvaluator constructs an instance of the restQL interpreter.
-func NewEvaluator(log restql.Logger, mr MappingsReader, qr QueryReader, r runner.Runner, p parser.Parser, l plugins.Lifecycle) Evaluator {
+func NewEvaluator(log restql.Logger, mr MappingsReader, qr QueryReader, r runner.Runner, p parser.Parser, l plugins.Lifecycle, me MatchEvaluator) Evaluator {
 	return Evaluator{
 		log:            log,
 		mappingsReader: mr,
@@ -40,6 +41,7 @@ func NewEvaluator(log restql.Logger, mr MappingsReader, qr QueryReader, r runner
 		runner:         r,
 		parser:         p,
 		lifecycle:      l,
+		matchEvaluator: me,
 	}
 }
 
@@ -118,7 +120,7 @@ func (e Evaluator) evaluateQuery(ctx context.Context, queryTxt string, queryOpts
 		return nil, err
 	}
 
-	resources, err = ApplyFilters(log, nil, query, resources)
+	resources, err = ApplyFilters(log, e.matchEvaluator, query, resources)
 	if err != nil {
 		log.Error("failed to apply filters", err, "input", fmt.Sprintf("%+#v", queryContext.Input))
 		return nil, err

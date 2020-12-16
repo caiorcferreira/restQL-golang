@@ -35,6 +35,9 @@ cache:
     maxSize: 100
   parser:
     maxSize: 100
+  matches:
+    argumentParsingMaxSize: 100
+    resultMaxSize: 100
 
 database:
   timeout: 1000

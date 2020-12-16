@@ -81,7 +81,7 @@ func extractWithFilters(me MatchEvaluator, filters map[string]interface{}, resou
 				node[key] = value
 			} else {
 				subFilter, _ := subFilter.(map[string]interface{})
-				f, err := extractWithFilters(nil, subFilter, value)
+				f, err := extractWithFilters(me, subFilter, value)
 				if err != nil {
 					return nil, err
 				}
@@ -100,7 +100,7 @@ func extractWithFilters(me MatchEvaluator, filters map[string]interface{}, resou
 		}
 
 		for i, r := range resourceResult {
-			f, err := extractWithFilters(nil, filters, r)
+			f, err := extractWithFilters(me, filters, r)
 			if err != nil {
 				return nil, err
 			}

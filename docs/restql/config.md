@@ -109,6 +109,14 @@ The update background routine has two parameters
 - Refresh interval: for example if it is set to `30s` then the routine will run every thirty seconds. To set it, use the `cache.mappings.refreshInterval` field or the `RESTQL_CACHE_MAPPINGS_REFRESH_INTERVAL` environment variable, both accept a duration string.
 - Refresh Queue Length: when an entry is hit and expired, a task in added to the background update routine queue. Every time the routine run, all tasks in this queue are executed. You can limit the size of this queue, which effectively limits the batch size which the background routine will receive every time it runs and, therefore, limits the time which will be spent in the background routine every time. To set it, use the `cache.mappings.refreshQueueLength` field or the `RESTQL_CACHE_MAPPINGS_REFRESH_QUEUE_LENGTH` environment variable, both accept an integer value.
 
+**Matches function**:
+
+This cache avoids repeated work on the `matches` function flow, which depends heavily on regular expressions, that are [notorious slow on Go](https://awmanoj.github.io/tech/2016/09/08/on-slow-regular-expressions-golang/) and performs various allocations.  
+
+- `cache.matches.argumentParsingMaxSize`: the maximum size of the cache for storing `matches` arguments as parsed regular expressions.
+- `cache.matches.resultMaxSize`: the maximum size of the cache for storing the result of evaluating a regular expression against a value.
+  
+
 ## Logging
 
 Due to the traffic restQL is designed to handle it takes a conservative approach to logging, placing the most of it in the `DEBUG` level. You can customize this log level and others parameters through the configuration file:
