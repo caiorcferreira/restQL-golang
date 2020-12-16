@@ -118,7 +118,7 @@ func (e Evaluator) evaluateQuery(ctx context.Context, queryTxt string, queryOpts
 		return nil, err
 	}
 
-	resources, err = ApplyFilters(log, query, resources)
+	resources, err = ApplyFilters(log, nil, query, resources)
 	if err != nil {
 		log.Error("failed to apply filters", err, "input", fmt.Sprintf("%+#v", queryContext.Input))
 		return nil, err
