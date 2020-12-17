@@ -8,22 +8,42 @@ import (
 	"regexp"
 )
 
+type MatchEvaluatorCacheOptions func(*MatchEvaluatorCache)
+
+func WithParserArgumentCache(c *Cache) func(*MatchEvaluatorCache) {
+	return func(mec *MatchEvaluatorCache) {
+		mec.parseArgCache = c
+	}
+}
+
+func WithMatchValueCache(c *Cache) func(*MatchEvaluatorCache) {
+	return func(mec *MatchEvaluatorCache) {
+		mec.matchValueCache = c
+	}
+}
+
 // MatchEvaluatorCache is a caching wrapper that implements the eval.MatchEvaluator interface.
 type MatchEvaluatorCache struct {
 	log             restql.Logger
+	matchEvaluator  eval.MatchEvaluator
 	parseArgCache   *Cache
 	matchValueCache *Cache
 }
 
-func NewMatchEvaluatorCache(log restql.Logger, parseArgCache *Cache, matchValueCache *Cache) *MatchEvaluatorCache {
-	return &MatchEvaluatorCache{
-		log:             log,
-		parseArgCache:   parseArgCache,
-		matchValueCache: matchValueCache,
+func NewMatchEvaluatorCache(log restql.Logger, me eval.MatchEvaluator, options ...MatchEvaluatorCacheOptions) *MatchEvaluatorCache {
+	mec := &MatchEvaluatorCache{log: log, matchEvaluator: me}
+	for _, option := range options {
+		option(mec)
 	}
+
+	return mec
 }
 
 func (mc *MatchEvaluatorCache) ParseArg(arg interface{}) (*regexp.Regexp, error) {
+	if mc.parseArgCache == nil {
+		return mc.matchEvaluator.ParseArg(arg)
+	}
+
 	result, err := mc.parseArgCache.Get(context.Background(), arg)
 	if err != nil {
 		return nil, err
@@ -44,6 +64,10 @@ type matchValueCacheKey struct {
 }
 
 func (mc *MatchEvaluatorCache) MatchValue(matchRegex *regexp.Regexp, value interface{}) bool {
+	if mc.matchValueCache == nil {
+		return mc.matchEvaluator.MatchValue(matchRegex, value)
+	}
+
 	key := matchValueCacheKey{regex: matchRegex, value: value}
 	result, err := mc.matchValueCache.Get(context.Background(), key)
 	if err != nil {
