@@ -72,7 +72,7 @@ func (mc *MatchEvaluatorCache) MatchValue(matchRegex *regexp.Regexp, value inter
 	key := matchValueCacheKey{regex: matchRegex.String(), value: value}
 	result, err := mc.rawCache.Get(key)
 	if err != nil {
-		match := mc.MatchValue(matchRegex, value)
+		match := mc.matchEvaluator.MatchValue(matchRegex, value)
 		err := mc.rawCache.Set(key, match)
 		if err != nil {
 			mc.log.Error("failed to set match value on cache", err)
