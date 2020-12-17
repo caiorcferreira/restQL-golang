@@ -39,7 +39,9 @@ func NewMatchEvaluatorCache(log restql.Logger, me eval.MatchEvaluator, cfg *conf
 		option(mec)
 	}
 
-	mec.rawCache = gcache.New(cfg.Cache.Matches.ResultMaxSize).LRU().Build()
+	if cfg.Cache.Matches.ResultMaxSize > 0 {
+		mec.rawCache = gcache.New(cfg.Cache.Matches.ResultMaxSize).LRU().Build()
+	}
 
 	return mec
 }
@@ -69,6 +71,10 @@ type matchValueCacheKey struct {
 }
 
 func (mc *MatchEvaluatorCache) MatchValue(matchRegex *regexp.Regexp, value interface{}) bool {
+	if mc.rawCache == nil {
+		return mc.matchEvaluator.MatchValue(matchRegex, value)
+	}
+
 	key := matchValueCacheKey{regex: matchRegex.String(), value: value}
 	result, err := mc.rawCache.Get(key)
 	if err != nil {

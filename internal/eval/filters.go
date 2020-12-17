@@ -150,16 +150,7 @@ func applyMatchFilter(me MatchEvaluator, filter domain.Match, key string, value 
 
 		return nil
 	default:
-		var strVal string
-		if v, ok := value.(string); ok {
-			strVal = v
-		} else {
-			strVal = fmt.Sprintf("%v", value)
-		}
-
-		match := matchRegex.MatchString(strVal)
-
-		if match {
+		if me.MatchValue(matchRegex, value) {
 			node[key] = value
 		} else {
 			delete(node, key)
