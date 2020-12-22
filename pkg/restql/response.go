@@ -2,7 +2,10 @@ package restql
 
 import (
 	"encoding/json"
+	jsoniter "github.com/json-iterator/go"
 )
+
+var jsonParser = jsoniter.ConfigCompatibleWithStandardLibrary
 
 // ResponseBody is a wrapper that allows restQL to defer JSON parsing
 // the HTTP body of an upstream response.
@@ -18,7 +21,7 @@ import (
 // with SetValue method, then the Marshal and Unmarshal function will operate
 // using this value rather then the byte slice.
 type ResponseBody struct {
-	log Logger
+	log       Logger
 	jsonBytes []byte
 	jsonValue interface{}
 }
@@ -68,7 +71,7 @@ func (r *ResponseBody) SetValue(v interface{}) {
 //   return it as a json.RawMessage.
 func (r *ResponseBody) Marshal() (interface{}, error) {
 	if r.jsonValue != nil {
-		b, err := json.Marshal(r.jsonValue)
+		b, err := jsonParser.Marshal(r.jsonValue)
 		if err != nil {
 			return nil, err
 		}
@@ -107,7 +110,7 @@ func (r *ResponseBody) Unmarshal() interface{} {
 	}
 
 	var responseBody interface{}
-	err := json.Unmarshal(bodyByte, &responseBody)
+	err := jsonParser.Unmarshal(bodyByte, &responseBody)
 	if err != nil {
 		body := string(bodyByte)
 		r.log.Error("failed to unmarshal response body", err, "body", body)
@@ -126,7 +129,7 @@ func (r *ResponseBody) Valid() bool {
 		return true
 	}
 
-	return len(r.jsonBytes) > 0 && json.Valid(r.jsonBytes)
+	return len(r.jsonBytes) > 0 && jsonParser.Valid(r.jsonBytes)
 }
 
 // Clear removes all internal content.
