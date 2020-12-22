@@ -3,7 +3,6 @@ package httpclient
 import (
 	"bytes"
 	"context"
-	"encoding/json"
 	"io"
 	"io/ioutil"
 	"net"
@@ -18,9 +17,12 @@ import (
 	"github.com/b2wdigital/restQL-golang/v4/internal/domain"
 	"github.com/b2wdigital/restQL-golang/v4/internal/platform/conf"
 	"github.com/b2wdigital/restQL-golang/v4/internal/platform/plugins"
+	jsoniter "github.com/json-iterator/go"
 	"github.com/pkg/errors"
 	"github.com/rs/dnscache"
 )
+
+var json = jsoniter.ConfigCompatibleWithStandardLibrary
 
 const defaultStatusCode = 0
 
