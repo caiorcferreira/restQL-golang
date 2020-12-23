@@ -9,7 +9,6 @@ require (
 	github.com/fasthttp/router v1.3.2
 	github.com/google/go-cmp v0.5.2
 	github.com/google/uuid v1.1.2
-	github.com/json-iterator/go v1.1.10
 	github.com/klauspost/compress v1.11.0 // indirect
 	github.com/pkg/errors v0.9.1
 	github.com/rs/dnscache v0.0.0-20190621150935-06bb5526f76b

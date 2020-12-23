@@ -1,15 +1,12 @@
 package eval
 
 import (
-	//"encoding/json"
+	"encoding/json"
 	"github.com/b2wdigital/restQL-golang/v4/pkg/restql"
 	"strconv"
 
 	"github.com/b2wdigital/restQL-golang/v4/internal/domain"
-	jsoniter "github.com/json-iterator/go"
 )
-
-var json = jsoniter.ConfigCompatibleWithStandardLibrary
 
 // ResolveVariables returns a restQL query with all variables
 // resolved to values present in the client body,

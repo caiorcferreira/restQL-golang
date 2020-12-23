@@ -2,7 +2,7 @@ package web
 
 import (
 	"bytes"
-	//"encoding/json"
+	"encoding/json"
 	"github.com/b2wdigital/restQL-golang/v4/internal/domain"
 	"github.com/b2wdigital/restQL-golang/v4/pkg/restql"
 	"net/http"

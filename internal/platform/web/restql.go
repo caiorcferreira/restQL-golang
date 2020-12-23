@@ -1,7 +1,7 @@
 package web
 
 import (
-	//"encoding/json"
+	"encoding/json"
 	"fmt"
 	"net/http"
 	"strconv"
@@ -12,12 +12,9 @@ import (
 	"github.com/b2wdigital/restQL-golang/v4/internal/platform/conf"
 	"github.com/b2wdigital/restQL-golang/v4/internal/platform/web/middleware"
 	"github.com/b2wdigital/restQL-golang/v4/pkg/restql"
-	jsoniter "github.com/json-iterator/go"
 	"github.com/pkg/errors"
 	"github.com/valyala/fasthttp"
 )
-
-var json = jsoniter.ConfigCompatibleWithStandardLibrary
 
 var jsonContentType = "application/json"
 
