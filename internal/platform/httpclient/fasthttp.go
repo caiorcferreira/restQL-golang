@@ -143,7 +143,7 @@ func (hc *fastHttpClient) Do(ctx context.Context, request restql.HTTPRequest) (r
 		StatusCode: hr.response.StatusCode(),
 		Headers:    readHeaders(hr.response),
 		Duration:   hr.duration,
-		Body:       hc.unmarshalBody(hc.log, hr.response),
+		Body:       hc.unmarshalBody(hr),
 	}
 
 	fasthttp.ReleaseResponse(hr.response)
@@ -153,25 +153,17 @@ func (hc *fastHttpClient) Do(ctx context.Context, request restql.HTTPRequest) (r
 	return response, nil
 }
 
-func (hc *fastHttpClient) unmarshalBody(log restql.Logger, response *fasthttp.Response) *restql.ResponseBody {
-	//target := response.Request.URL.Host
-	//requestURL := response.Header.
-	statusCode := response.StatusCode
-	//
-	////response := restql.HTTPResponse{
-	////	URL:        requestURL,
-	////	StatusCode: res.StatusCode(),
-	////	Headers:    readHeaders(res),
-	////	Duration:   responseTime,
-	////}
+func (hc *fastHttpClient) unmarshalBody(hr httpResult) *restql.ResponseBody {
+	requestURL := hr.target
+	statusCode := hr.response.StatusCode
 
-	bodyByte := response.Body()
+	bodyByte := hr.response.Body()
 	bb := make([]byte, len(bodyByte))
 	copy(bb, bodyByte)
 
-	rb := restql.NewResponseBodyFromBytes(log, bb)
+	rb := restql.NewResponseBodyFromBytes(hc.log, bb)
 	if !rb.Valid() {
-		log.Error("invalid json as body", errInvalidJson, "body", rb.Unmarshal(), "statusCode", statusCode)
+		hc.log.Error("invalid json as body", errInvalidJson, "body", rb.Unmarshal(), "statusCode", statusCode, "url", requestURL)
 	}
 
 	return rb
