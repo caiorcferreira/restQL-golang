@@ -1,14 +1,17 @@
 package runner
 
 import (
-	"encoding/json"
+	//"encoding/json"
 	"net/http"
 	"strings"
 	"time"
 
 	"github.com/b2wdigital/restQL-golang/v4/internal/domain"
 	"github.com/b2wdigital/restQL-golang/v4/pkg/restql"
+	jsoniter "github.com/json-iterator/go"
 )
+
+var json = jsoniter.ConfigCompatibleWithStandardLibrary
 
 var disallowedHeaders = []string{
 	"host",
